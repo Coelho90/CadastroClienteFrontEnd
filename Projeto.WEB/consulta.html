@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html>
+<html ng-app="appConsulta">
+<head>
+    <meta charset="utf-8" />
+    <title>COTI Informática</title>
+
+    <link href="Content/bootstrap.min.css" rel="stylesheet" />
+
+</head>
+<body class="container">
+
+    <h2>Consulta de Clientes</h2>
+    <a href="/index.html">Página inicial</a>
+    <hr />
+
+    <div>
+        {{mensagem}}
+    </div>
+
+    <div ng-controller="consultaController">
+
+        <div class="row">
+            <div class="col-md-4">
+                <label>Pesquisar Clientes:</label>
+                <input type="text" class="form-control" ng-model="pesquisa" />
+            </div>
+            <div class="col-md-4">
+                <label>Ordernar por:</label>
+                <select class="form-control" ng-model="ordenacao">
+                    <option value="">Escolha uma Opção</option>
+                    <option value="IdCliente">Código</option>
+                    <option value="Nome">Nome do Cliente</option>
+                    <option value="Email">Email</option>
+                    <option value="DataCadastro">Data de Cadastro</option>
+                </select>
+            </div>
+        </div>
+        <br />
+        <table class="table table-hover" ng-init="consultar()">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Nome do Cliente</th>
+                    <th>Email</th>
+                    <th>Data de Cadastro</th>
+                    <th>Operações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="c in clientes | filter : pesquisa | orderBy : ordenacao">
+                    <td>{{c.IdCliente}}</td>
+                    <td>{{c.Nome}}</td>
+                    <td>{{c.Email}}</td>
+                    <td>{{c.DataCadastro | date : 'dd/MM/yyyy'}}</td>
+                    <td>
+                        <button class="btn btn-primary">
+                            Atualizar
+                        </button>
+
+                        <button class="btn btn-danger">
+                            Excluir
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="5">
+                        Quantidade de Clientes {{(clientes | filter : pesquisa).length}}
+                    </td>
+                </tr>
+            </tfoot>
+
+        </table>
+
+    </div>
+
+    <script src="Scripts/jquery-3.0.0.min.js"></script>
+    <script src="Scripts/bootstrap.min.js"></script>
+    <script src="Scripts/angular.min.js"></script>
+
+
+    <script>
+
+        var appConsulta = angular.module('appConsulta', []);
+
+        appConsulta.controller('consultaController',
+            function ($scope, $http) {
+
+                $scope.consultar = function () {
+                    $http.get("http://localhost:59047/api/cliente/consultar")
+                        .then(function (d) {
+                            $scope.clientes = d.data;
+                        })
+                        .catch(function (e) {
+                            $scope.mensagem = e.data;
+                        });
+
+                }
+
+            });
+
+    </script>
+
+
+
+
+</body>
+</html>

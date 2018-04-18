@@ -1,0 +1,74 @@
+﻿<!DOCTYPE html>
+<html ng-app="appCadastro">
+<head>
+    <meta charset="utf-8" />
+    <title>COTI Informática</title>
+
+    <link href="Content/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body class="container">
+
+    <h2>Cadastro de Clientes</h2>
+    <a href="/Index.html">Página inicial</a>
+    <hr />
+
+    <div class="row">
+        <div class="col-md-4" ng-controller="cadastroController">
+            <label>Nome do Cliente:</label>
+            <input type="text" class="form-control" ng-model="cliente.Nome" />
+            <br />
+
+            <label>Email:</label>
+            <input type="text" class="form-control" ng-model="cliente.Email" />
+            <br />
+
+            <button class="btn btn-success" ng-click="cadastrar()"> Cadastrar Cliente</button>
+            <br />
+            <br />
+
+            <strong>{{mensagem}}</strong>
+
+        </div>
+
+    </div>
+
+
+
+    <script src="Scripts/jquery-3.0.0.min.js"></script>
+    <script src="Scripts/bootstrap.min.js"></script>
+    <script src="Scripts/angular.min.js"></script>
+
+    <script>
+
+        var appCadastro = angular.module('appCadastro', []);
+
+        appCadastro.controller('cadastroController', function ($scope, $http) {
+
+            $scope.cadastrar = function () {
+                $scope.mensagem = "Processando, por favor aguarde.";
+
+
+                $http.post('http://localhost:59047/api/cliente/cadastrar', $scope.cliente)
+                    .then(function (d) {
+
+                        $scope.mensagem = d.data;
+
+                        $scope.cliente = {};
+                    })
+                    .catch(function (e) {
+
+                        $scope.mensagem = "Ocorreu um erro: " + e.data;
+
+                    });
+            };
+        });
+
+
+    </script>
+
+
+
+
+
+</body>
+</html>
